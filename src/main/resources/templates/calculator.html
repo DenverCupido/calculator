@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculator</title>
+</head>
+<body>
+
+<form th:action="@{/calculate}" th:object="${container}" method="POST">
+
+    Value 1 : <input type="number" name="numberOne" placeholder="Enter a number" th:value="${numberOne}">
+    <br>
+    <br>
+
+    Value 2 : <input type="number" name="numberTwo" placeholder="Enter a number" th:value="${numberTwo}">
+    <br>
+    <br>
+
+    Operator : <input th:each="op : ${operators}" type="radio" th:field="*{operator}" th:value="${op}" th:text="${op}"/>
+    <br>
+    <br>
+
+
+    Answer: <input type="number" th:value="${answer}">
+    <br>
+    <br>
+
+    <input type="submit">
+
+    <br>
+    <br>
+</form>
+
+<form th:action="@{/clear-form}" method="GET">
+    <input type="submit" value="Clear">
+</form>
+
+</body>
+</html>
