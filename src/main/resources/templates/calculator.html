@@ -7,33 +7,133 @@
 <body>
 
 <form th:action="@{/calculate}" th:object="${container}" method="POST">
+    <div>
+        <input type="number" id="numberBox" placeholder="Enter a number" th:value="${numberOne}">
+        <br>
+        <br>
 
-    Value 1 : <input type="number" name="numberOne" placeholder="Enter a number" th:value="${numberOne}">
+    </div>
+    <div>
+        <input type="button" value="1" onclick="numberClick(1)">
+        <input type="button" value="2" onclick="numberClick(2)">
+        <input type="button" value="3" onclick="numberClick(3)">
+        <input type="button" value="+" onclick="operatorClick('+')">
+        <br>
+
+        <input type="button" value="4" onclick="numberClick(4)">
+        <input type="button" value="5" onclick="numberClick(5)">
+        <input type="button" value="6" onclick="numberClick(6)">
+        <input type="button" value="-" onclick="operatorClick('-')">
+        <br>
+
+        <input type="button" value="7" onclick="numberClick(7)">
+        <input type="button" value="8" onclick="numberClick(8)">
+        <input type="button" value="9" onclick="numberClick(9)">
+        <input type="button" value="*" onclick="operatorClick('*')">
+        <br>
+
+        <input type="button" value="C" onclick="clear()">
+        <input type="button" value="0" onclick="numberClick(0)">
+        <input type="button" value="=" onclick="equalsClick()">
+        <input type="button" value="/" onclick="operatorClick('/')">
+
+    </div>
+
     <br>
     <br>
 
-    Value 2 : <input type="number" name="numberTwo" placeholder="Enter a number" th:value="${numberTwo}">
-    <br>
-    <br>
+    <script>
+        value = 0
+        answer = 0
+        operatorLastClicked = false
+        equalsLastClicked = false
+        lastOperator = '';
+        firstNumberClicked = false;
 
-    Operator : <input th:each="op : ${operators}" type="radio" th:field="*{operator}" th:value="${op}" th:text="${op}"/>
-    <br>
-    <br>
+        function numberClick(num) {
+            console.log("Number clicked : " + num)
+            console.log("operatorLastClicked : " + operatorLastClicked)
+            if (operatorLastClicked) {
+                document.getElementById('numberBox').value = num;
+            } else {
+                document.getElementById('numberBox').value += num;
+            }
 
+            value = num;
 
-    Answer: <input type="number" th:value="${answer}">
-    <br>
-    <br>
+            operatorLastClicked = false;
+            equalsLastClicked = false;
+        }
 
-    <input type="submit">
+        function operatorClick(operator) {
+            operatorLastClicked = true;
+            lastOperator = operator
 
-    <br>
-    <br>
+            console.log("lastOperator : " + lastOperator)
+            console.log("operatorLastClicked : " + operatorLastClicked)
+            value = document.getElementById('numberBox').value
+            console.log("operatorClick.value  : " + answer)
+            if (!equalsLastClicked) {
+                answer = doMath()
+            }
+            console.log("operatorClick.answer  : " + answer)
+            equalsLastClicked = false;
+        }
+
+        function clear() {
+            document.getElementById('numberBox').value = ''
+        }
+
+        function doMath() {
+            console.log("Current answer : " + answer)
+            console.log("Current value : " + value)
+
+            value = Number(value)
+
+            if (!firstNumberClicked) {
+                answer = value;
+                firstNumberClicked = true;
+                return answer;
+            }
+
+            switch (lastOperator) {
+                case '+' :
+                    console.log("add")
+                    answer += value
+                    break;
+                case '-' :
+                    console.log("minus")
+                    answer -= value;
+                    break;
+                case '*' :
+                    console.log("times")
+                    answer *= value;
+                    break;
+                case '/' :
+                    console.log("div")
+                    answer /= value;
+                    break;
+            }
+            return answer;
+        }
+
+        function equalsClick() {
+            equalsLastClicked = true
+            if (operatorLastClicked) {
+                document.getElementById('numberBox').placeholder = 'Error'
+                document.getElementById('numberBox').value = ''
+            } else {
+                let out = doMath()
+                console.log("Answer  : " + out)
+                document.getElementById('numberBox').value = out
+            }
+
+        }
+    </script>
 </form>
-
 <form th:action="@{/clear-form}" method="GET">
     <input type="submit" value="Clear">
 </form>
-
 </body>
+
 </html>
